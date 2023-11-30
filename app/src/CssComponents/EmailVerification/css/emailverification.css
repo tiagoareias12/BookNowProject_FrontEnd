@@ -1,0 +1,13 @@
+.inicioContainer{
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    padding: 200px 50px;
+}
+.containerEmail{
+    background-color: white;
+    width: 60%;
+    height: 450px;
+    padding: 55px
+    
+}
