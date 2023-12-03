@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import Register from '../../Components/Users/Register';
-import Footer from '../../Components/Global/Footer';
+import NotFound from '../../Components/Global/404Page';
 import Header from '../../Components/Global/Header';
-class RegisterPage extends Component {
+import Footer from '../../Components/Global/Footer';
+
+class NotFoundPage extends Component {
     render() {
       return (
         <div>
           <Header/>
-          <Register/>
+          <NotFound/>
           <Footer/>
         </div>
       );
     }
   }
 
-export default RegisterPage;
+export default NotFoundPage;

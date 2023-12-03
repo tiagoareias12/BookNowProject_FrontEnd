@@ -4,13 +4,37 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import IndexPage from '../src/MasterComponents/IndexPage';
 import LoginPage from '../src/MasterComponents/Users/LoginPage';
+import ProfilePage from '../src/MasterComponents/Users/ProfilePage';
 import RegisterPage from './MasterComponents/Users/RegisterPage';
-import NotFindPage from './Components/Global/404Page';
-import EmailVerificationPage from './MasterComponents/Users/EmailVerificationPage';
+import NovaReservaPage from './MasterComponents/Reserva/NovaReservaPage';
 
-var isAuthenticated = false; 
-if(sessionStorage.getItem('isAutenticated') == null) {
-    isAuthenticated = true;
+import NotFindPage from './MasterComponents/Global/NotFindPage';
+import EmailVerificationPage from './MasterComponents/Users/EmailVerificationPage';
+import GestaoReservaPage from './MasterComponents/Reserva/GestaoReservaPage';
+
+var jwt = require('jose');
+
+var isAutenticated;
+var isAdmin;
+
+if (sessionStorage.getItem('isAutenticated') == null){
+
+  isAutenticated = false;
+}
+else{
+  var token = jwt.decodeJwt(sessionStorage.getItem('token'));
+  if(token.isAdmin == false){
+    isAdmin = false;
+    isAutenticated = true;
+  }
+  else{
+    isAdmin = true;
+    isAutenticated = true;
+  }
+}
+
+//ROUTES DISPONIVEIS PARA UTILIZADORES NÃO AUTENTICADOS
+if(isAutenticated == false) {
 
   ReactDOM.render(
     <BrowserRouter>
@@ -29,7 +53,10 @@ if(sessionStorage.getItem('isAutenticated') == null) {
     , document.getElementById('root')
 );
 }
+//ROUTES DISPONIVEIS PARA UTILIZADORES AUTENTICADOS
 else{
+    if(isAdmin == false){
+    //ROUTES DISPONIVEIS PARA UTILIZADORES NORMAIS (CLIENTES)
     ReactDOM.render(
         <BrowserRouter>
             <Switch>
@@ -37,14 +64,40 @@ else{
                 <Route path="/" exact={true} component={IndexPage} />
                 {/*UTILIZADORES*/}
                 <Route path="/login" component={LoginPage} />
+                <Route path="/profile" component={ProfilePage} />
                 <Route path="/register" exact={true} component={RegisterPage} />
                 <Route path="/register/confirm" exact={true} component={EmailVerificationPage} />~
                 <Route path="/home" component={IndexPage} />
+                <Route path="/reserva/new" component={NovaReservaPage} />
                 <Route path='*' component={NotFindPage} /> 
     
             </Switch>
         </ BrowserRouter>
         , document.getElementById('root')
     );
+    }
+        //ROUTES DISPONIVEIS PARA UTILIZADORES ADMIN (ADMINISTRADORES)
+        if(isAdmin == true){
+        ReactDOM.render(
+            <BrowserRouter>
+                <Switch>
+                    {/*GLOBAIS*/}
+                    <Route path="/" exact={true} component={IndexPage} />
+                    {/*UTILIZADORES*/}
+                    <Route path="/login" component={LoginPage} />
+                    <Route path="/profile" component={ProfilePage} />
+                    <Route path="/register" exact={true} component={RegisterPage} />
+                    <Route path="/register/confirm" exact={true} component={EmailVerificationPage} />~
+                    <Route path="/home" component={IndexPage} />
+                    <Route path="/reserva/new" component={NovaReservaPage} />
+                    <Route path="/reserva/gestao" component={GestaoReservaPage} />
+                    <Route path='*' component={NotFindPage} /> 
+        
+                </Switch>
+            </ BrowserRouter>
+            , document.getElementById('root')
+        );
+        }
+    
     }
 serviceWorker.unregister();

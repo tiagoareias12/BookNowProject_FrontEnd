@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Login from '../../Components/Users/Login';
+import GestaoReserva from '../../Components/Reserva/GestaoReserva';
 import Footer from '../../Components/Global/Footer';
 import Header from '../../Components/Global/Header';
 
@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet'
 
 const TITLE = 'Autenticação'
 
-class LoginPage extends Component {
+class GestaoReservaPage extends Component {
     render() {
       return (
         
@@ -16,11 +16,11 @@ class LoginPage extends Component {
           <title>{ TITLE }</title>
         </Helmet>
         <Header/>
-          <Login/>
+          <GestaoReserva/>
         <Footer/>
         </div>
       );
     }
   }
 
-export default LoginPage;
+export default GestaoReservaPage;

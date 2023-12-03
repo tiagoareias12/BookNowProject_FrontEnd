@@ -1,12 +1,25 @@
 import React, { Component } from "react";
 import '../../CssComponents/Header/css/header.css';
+var jwt = require('jose');
 
-var isAutenticated = true;
+var isAutenticated;
+var isAdmin;
 
 if (sessionStorage.getItem('isAutenticated') == null){
+
   isAutenticated = false;
 }
-
+else{
+  var token = jwt.decodeJwt(sessionStorage.getItem('token'));
+  if(token.isAdmin == false){
+    isAdmin = false;
+    isAutenticated = true;
+  }
+  else{
+    isAdmin = true;
+    isAutenticated = true;
+  }
+}
 
 
 
@@ -18,6 +31,8 @@ window.location="/";
 
   
 }
+
+
 
 // componentDidMount(){
 //   alert("teste");
@@ -43,11 +58,13 @@ window.location="/";
 	render() {
 		return (
 <nav className="navbar navbar-icon-top navbar-expand-lg navbar-custom">
-  <a className="navbar-brand" href="#">BookNow</a>
+  <a className="navbar-brand" href="/">BookNow</a>
   <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <i className="fa fa-align-justify">  </i>
+
+
     <span className="navbar-toggler-icon"></span>
   </button>
-
   <div className="collapse navbar-collapse" id="navbarSupportedContent">
   {(isAutenticated == true) ?(
     <ul className="navbar-nav mr-auto">
@@ -81,12 +98,16 @@ window.location="/";
           Reservas
         </a>
         <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a className="dropdown-item" href="#">Ver Reservas para Hoje</a>
-          <a className="dropdown-item" href="#">Ver Reservas para Amanhã</a>
-          <a className="dropdown-item" href="#">Ver Mais Reservas</a>
+          <a className="dropdown-item" href="#">Ver Reservas</a>
+          <a className="dropdown-item" href="/reserva/new">Nova Reserva</a>
           <a className="dropdown-item" href="#">Cancelar Reservas</a>
+          {(isAdmin == true) ?(
+          <div>
           <div className="dropdown-divider"></div>
-          <a className="dropdown-item" href="#">Gestão de Reservas</a>
+          <a className="dropdown-item" href="/reserva/gestao">Gestão de Reservas</a>
+          </div>
+          ):(<div></div>)
+  }
         </div>
       </li>
     </ul>
