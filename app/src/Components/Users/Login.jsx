@@ -32,7 +32,7 @@ class Login extends Component {
 
 	handleSubmit = async e => {
     e.preventDefault();
-
+		try{
 		//objeto login
 		const loginData = {
 			username:document.getElementById('username').value,
@@ -80,6 +80,10 @@ class Login extends Component {
 						break;
 				}
 			});
+		}catch(err){
+			alert(err);
+		}
+
 	}
 
  

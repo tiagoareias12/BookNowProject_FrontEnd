@@ -85,17 +85,20 @@ class GestaoReserva extends Component {
     }
 
     async getTipoSistema(){
-        var tipoSistema = document.getElementById('select').value;
+        var tipoSistema = document.getElementById('tipoReserva').value;
         if(tipoSistema == "1"){
             document.getElementById('preco').removeAttribute('disabled','');
             document.getElementById('numeroCampos').removeAttribute('disabled','');
             document.getElementById('mesas').setAttribute('disabled','');
+            document.getElementById('mesas').value = "";
+
         }
         if(tipoSistema == "2"){
             document.getElementById('mesas').removeAttribute('disabled','');
             document.getElementById('preco').setAttribute('disabled','');
             document.getElementById('numeroCampos').setAttribute('disabled','');
-
+            document.getElementById('preco').value = "";
+            document.getElementById('numeroCampos').value = "";
 
         }
         if(tipoSistema == ""){
@@ -116,6 +119,44 @@ class GestaoReserva extends Component {
         }
     }
 
+
+    novoSistema = async e => {
+      e.preventDefault();
+      alert("vai ser criado um novo sistema de reserva");
+      alert(document.getElementById('distrito'));
+      const postData = {
+        distrito:document.getElementById('distrito').value,
+        concelho:document.getElementById('concelho').value,
+        tipoReserva:document.getElementById('tipoReserva').value,
+        nome: document.getElementById('name').value,
+        preco: document.getElementById('preco').value,
+        numeroCampos: document.getElementById('numeroCampos').value,
+        mesas: document.getElementById('mesas').value,
+        token:sessionStorage.getItem('token')
+    };
+    console.log(postData);
+         const response = await fetch('http://localhost:8000/gestao/novoSistema', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData)
+        });
+        await response.json().then(resp => {
+            let status = resp.status;
+            switch (status) {
+                case "OK":
+                    alert("Novo sistema criado com sucesso");
+                    break;
+                default:
+                    console.log(this.state.alertText)
+                break;
+            }
+
+        });
+
+    }
+  
 
   render() {
     return (
@@ -141,7 +182,7 @@ class GestaoReserva extends Component {
     </center>
     </a>
     <div class="collapse" id="collapseExample">
-    <form id="formNovoSistema" className="login100-form validate-form" onSubmit={this.handleSubmit}>
+    <form id="formNovoSistema" className="login100-form validate-form" onSubmit={this.novoSistema}>
     <hr></hr>
                         <div class="tour-booking-form">
                             <form>
@@ -172,7 +213,7 @@ class GestaoReserva extends Component {
                                         <div class="form-group">
                                             <label class="control-label" for="datepicker">Concelho do Local da Reserva</label>
                                             <div class="select">
-                                            <select id="distrito" name="select" class="form-control"  required>
+                                            <select id="concelho" name="select" class="form-control"  required>
                                                     <option value="">Escolha o concelho</option>
                                                     {
                   this.state.dataConcelhos.map((data, index) => {
@@ -191,7 +232,7 @@ class GestaoReserva extends Component {
                                         <div class="form-group">
                                             <label class="control-label required" for="select">Tipo de Reserva:</label>
                                             <div class="select">
-                                                <select id="select" name="select" class="form-control" onChange={this.getTipoSistema}>
+                                                <select id="tipoReserva" name="select" class="form-control" onChange={this.getTipoSistema}>
                                                     <option value="">Escolha o tipo de reserva:</option>
                                                     <option value="1">Campo Desportivo</option>
                                                     <option value="2">Restaurante</option>
@@ -211,13 +252,13 @@ class GestaoReserva extends Component {
                                     <div id="inputsCampo" class="col-sm-2" >
                                     <div class="form-group">
                                         <label class="control-label required" for="select">Preço€/hora</label>
-                                        <input id="preco" type="text" placeholder="Por exemplo: 5" class="form-control" required disabled></input>
+                                        <input id="preco" type="text" placeholder="Por exemplo: 5" class="form-control"  required disabled></input>
                                     </div>
                                     </div>
                                     <div id="inputsCampo2" class="col-sm-2">
                                     <div class="form-group">
                                         <label class="control-label required" for="select">Campos disponiveis</label>
-                                        <input id="numeroCampos" type="text" placeholder="Por exemplo: 2" class="form-control" required disabled></input>
+                                        <input id="numeroCampos" type="text" placeholder="Por exemplo: 2" class="form-control"  required disabled></input>
                                     </div>
                                     </div>
 
@@ -229,47 +270,8 @@ class GestaoReserva extends Component {
                                     </div>
 
 
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt30">
-                                        <h4 class="tour-form-title">Your Travel Plan Detail</h4>
-                                    </div>
-                                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label class="control-label" for="name">Name</label>
-                                            <input id="name" type="text" placeholder="Por exemplo: Restaurante X ou Campo de Ténis de X" class="form-control" required></input>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label class="control-label" for="email"> Email</label>
-                                            <input id="email" type="text" placeholder="xxxx@xxxx.xxx" class="form-control" required></input>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label class="control-label" for="phone"> Phone</label>
-                                            <input id="phone" type="text" placeholder="(222) 222-2222" class="form-control" required></input>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label class="control-label" for="country">Country</label>
-                                            <input id="country" type="text" placeholder="India" class="form-control" required></input>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label class="control-label" for="city">City</label>
-                                            <input id="city" type="text" placeholder="Ahmedabad" class="form-control" required></input>
-                                        </div>
-                                    </div>
                                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label class="control-label" for="textarea">Describe Your Travel Requirements</label>
-                                            <textarea class="form-control" id="textarea" name="textarea" rows="4" placeholder="Write Your Requirements"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                        <button type="submit" name="singlebutton" class="btn btn-primary">send Enquiry</button>
+                                        <button type="submit" name="singlebutton" class="btn btn-primary">Criar Sistema de Reserva</button>
                                     </div>
                                 </div>
                                 </form>
